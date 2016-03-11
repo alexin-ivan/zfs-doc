@@ -1,2 +1,2 @@
 # zfs-doc
-ZFSonLinux documentation
+ZFSonLinux documentation (see [report.md](./report.md))
