@@ -3,7 +3,7 @@ SRC=report.md
 OUT_DIR=$(PWD)
 OUT_PDF=$(OUT_DIR)/report.pdf
 OUT_ODT=$(OUT_DIR)/report.odt
-OUT_HTML=$(OUT_DIR)/report.html
+OUT_HTML=$(OUT_DIR)/index.html
 imgs:=$(ls ./img/*)
 
 FILTER_SVG=--filter=$(HOME)/local/share/python/pandoc-svg.py 
@@ -28,6 +28,10 @@ CHAPTERS=\
 	 zfs-dmu.md \
 	 zfs-dbuf.md \
 	 zfs-txg.md \
+	 zfs-spa.md \
+	 zfs-vdev.md \
+	 appendix.md \
+	 zfs-space_maps.md
 
 TOC=toc.md
 
