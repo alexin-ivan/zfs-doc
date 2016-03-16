@@ -9,6 +9,7 @@ imgs:=$(ls ./img/*)
 FILTER_SVG=--filter=$(HOME)/local/share/python/pandoc-svg.py 
 FILTER_REFS=--filter pandoc-fignos --filter pandoc-tablenos
 USE_TOC=--toc
+HTML_TPL=--template ./tpl/template.html --css ./tpl/template.css
 USE_FILTER=$(FILTER_REFS)
 FIRST_CHAP='# ZFS'
 
@@ -30,6 +31,7 @@ CHAPTERS=\
 	 zfs-txg.md \
 	 zfs-spa.md \
 	 zfs-vdev.md \
+	 zfs-arc.md \
 	 appendix.md \
 	 zfs-space_maps.md
 
@@ -53,7 +55,7 @@ $(OUT_ODT): $(OUT_DIR) $(SRC)
 	pandoc $(USE_TOC) $(SRC) -o $(OUT_ODT) $(USE_FILTER) -V lang=russian -V babel-lang=russian $(VARS)
 
 $(OUT_HTML): $(OUT_DIR) $(SRC)
-	cat $(SRC) | sed -n -e '/# ZFS/,$$p' | pandoc $(USE_TOC) -t html5 --self-contained -o $(OUT_HTML) $(USE_FILTER) $(VARS)
+	cat $(SRC) | sed -n -e '/# ZFS/,$$p' | pandoc $(USE_TOC) -t html5 --self-contained -o $(OUT_HTML) $(USE_FILTER) $(HTML_TPL) $(VARS)
 
 open: $(OUT_PDF)
 	xdg-open $(OUT_PDF)
