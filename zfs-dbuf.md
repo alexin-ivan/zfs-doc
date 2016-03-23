@@ -42,4 +42,22 @@ TODO: в этом разделе будет разъяснён механизм 
 записи данных. Но он будет добавлен после того, как будет закончен раздел по ZIO.
 Также тут будет описание работы функции `dbuf_hold`.
 
+### Статистика по DMU-буферам
+
+DMU-буферы выделяются при помощи SLAB-аллокатора. Статистику по ним можно посмотреть в файле `/proc/slabinfo`:
+
+```bash
+# grep dmu_buf_impl_t /proc/slabinfo
+name              <active_objs> <num_objs>  <objsize>  <objperslab>  <pagesperslab>
+dmu_buf_impl_t    1819945       1834083     296        27            2             
+# echo $((1819920 * 296)) # active_objs * objsize
+538696320
+```
+
+Или в ARC-статистике:
+
+```bash
+#grep other_size /proc/spl/kstat/zfs/arcstats
+other_size                      4    538965376
+```
 

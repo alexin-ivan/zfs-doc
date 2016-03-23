@@ -1,17 +1,17 @@
 SDATE=current
 SRC=report.md
+BOOK=/tmp/book.md
 OUT_DIR=$(PWD)
 OUT_PDF=$(OUT_DIR)/report.pdf
 OUT_ODT=$(OUT_DIR)/report.odt
 OUT_HTML=$(OUT_DIR)/index.html
 imgs:=$(ls ./img/*)
 
-FILTER_SVG=--filter=$(HOME)/local/share/python/pandoc-svg.py 
-FILTER_REFS=--filter pandoc-fignos --filter pandoc-tablenos
+FILTER_SVG=--filter=./filters/pandoc_svg.py 
+FILTER_REFS=--filter ./filters/pandoc_fignos.py --filter ./filters/pandoc_tablenos.py
 USE_TOC=--toc
 HTML_TPL=--template ./tpl/template.html --css ./tpl/template.css
 USE_FILTER=$(FILTER_REFS)
-FIRST_CHAP='# ZFS'
 
 LATEX_ENGINE=--latex-engine=xelatex
 
@@ -32,6 +32,8 @@ CHAPTERS=\
 	 zfs-spa.md \
 	 zfs-vdev.md \
 	 zfs-arc.md \
+	 zfs-zil.md \
+	 zfs-kstat.md \
 	 appendix.md \
 	 zfs-space_maps.md
 
@@ -42,8 +44,11 @@ all: $(OUT_HTML) $(img)
 $(SRC): $(TOC) $(CHAPTERS)
 	cat $(TOC) $(CHAPTERS) > $(SRC)
 
-$(OUT_PDF): $(OUT_DIR) $(SRC)
-	cat $(SRC) | sed -n -e '/# ZFS/,$$p' | pandoc $(USE_TOC) -o $(OUT_PDF) $(USE_FILTER) $(LATEX_ENGINE) $(VARS)
+$(BOOK): $(TOC) $(CHAPTERS)
+	cat $(CHAPTERS) > $(BOOK)
+
+$(OUT_PDF): $(OUT_DIR) $(BOOK)
+	pandoc $(USE_TOC) -o $(OUT_PDF) $(USE_FILTER) $(LATEX_ENGINE) $(VARS) $(BOOK)
 
 pdf: $(OUT_PDF)
 
@@ -51,11 +56,11 @@ html: $(OUT_HTML)
 
 odt: $(OUT_ODT)
 
-$(OUT_ODT): $(OUT_DIR) $(SRC)
-	pandoc $(USE_TOC) $(SRC) -o $(OUT_ODT) $(USE_FILTER) -V lang=russian -V babel-lang=russian $(VARS)
+$(OUT_ODT): $(OUT_DIR) $(BOOK)
+	pandoc $(USE_TOC) $(BOOK) -o $(OUT_ODT) $(USE_FILTER) -V lang=russian -V babel-lang=russian $(VARS)
 
-$(OUT_HTML): $(OUT_DIR) $(SRC)
-	cat $(SRC) | sed -n -e '/# ZFS/,$$p' | pandoc $(USE_TOC) -t html5 --self-contained -o $(OUT_HTML) $(USE_FILTER) $(HTML_TPL) $(VARS)
+$(OUT_HTML): $(OUT_DIR) $(BOOK)
+	pandoc $(USE_TOC) -t html5 --self-contained -o $(OUT_HTML) $(USE_FILTER) $(HTML_TPL) $(VARS) $(BOOK)
 
 open: $(OUT_PDF)
 	xdg-open $(OUT_PDF)
@@ -75,6 +80,9 @@ pre_build:
 	pip install pandoc-tablenos
 	pip install pandoc-eqnos
 
+pre_python:
+	@bash -c 'echo -en "Do:\n\tpyenv shell 2.7.9\n"'
+
 clean:
 	rm -fR *.aux
 	rm -fR *.log
@@ -85,6 +93,7 @@ clean:
 	rm -fR *.toc
 	rm -fR $(OUT_PDF)
 	rm -fR $(OUT_ODT)
+	rm -fR $(OUT_HTML)
 
 edit: $(OUT_DIR)
 	gvim $(SRC)
