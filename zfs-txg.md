@@ -152,7 +152,6 @@ dmu_tx_hold_object_impl(dmu_tx_t *tx, objset, object) {
 
 2. Определение максимального/минимального размера блока (`min_bs, max_bs`) и размера косвенного блока (`min_ibs = max_ibs = dn->dn_indblkshift`);
 
-3. TODO: дополнить
 
 Функция `dmu_tx_count_dnode` подобна функции `dmu_tx_count_write`, однако она определяет количество данных, которое будет записано в самой `dnode`.
 
@@ -645,8 +644,6 @@ $offset / ( 2 ^ {dn\_datablkshift})$ при помощи `dbuf_whichblock`.
 старых данных в новое место.
 
 После чтения/заполнения буфера, он будет помечен как "грязный" (`dbuf_dirty`) - подлежащий сбросу на диск.
-
-TODO: добавить описание `dbuf_dirty` и `dmu_buf_rele_array`.
 
 ```c
 // dmu_write_bio

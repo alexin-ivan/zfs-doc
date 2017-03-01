@@ -82,4 +82,18 @@ name                            type data
 а у дочерних - несколько. Соответственно, сумма "скоростей" записи на физические диски будет меньше,
 чем "скорость" записи на пул, т.к. будет "оверхед", связанный с избыточностью.
 
+Кроме того, в данной статистике присутствуют следующие поля:
+
+```c
+hrtime_t   wtime;            /* cumulative wait (pre-service) time */
+hrtime_t   wlentime;         /* cumulative wait length*time product*/
+hrtime_t   wlastupdate;      /* last time wait queue changed */
+hrtime_t   rtime;            /* cumulative run (service) time */
+hrtime_t   rlentime;         /* cumulative run length*time product */
+hrtime_t   rlastupdate;      /* last time run queue changed */
+uint_t     wcnt;             /* count of elements in wait state */
+uint_t     rcnt;             /* count of elements in run state */
+```
+
+Они связаны с длинной очереди входных данных на vdev'ы.
 
